@@ -1,7 +1,11 @@
+from datetime import datetime, timedelta
+from random import random
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+
+from config.settings import AUTH_USER_MODEL
 
 
 class CustomUser(AbstractUser):
@@ -68,36 +72,66 @@ class EmailVerification(models.Model):
 
 
 # //////////////////////////////////////////////////////////////////////
-# from django.core.validators import FileExtensionValidator 
-# ODINARY_USER,MANAGER,ADMIN=('ordinary_user','manager','admin')
-# NEW,CODE_VERIFIED,DONE,PHOTO_DONE=('new','code_verified','done','photo_done')
-# VIA_EMAIL,VIA_PHONE=('via_email','via_phone')
+from django.core.validators import FileExtensionValidator 
+ODINARY_USER,MANAGER,ADMIN=('ordinary_user','manager','admin')
+NEW,CODE_VERIFIED,DONE,PHOTO_DONE=('new','code_verified','done','photo_done')
+VIA_EMAIL,VIA_PHONE=('via_email','via_phone')
 
 
-# class User(abstractUser):
-# 	USER_ROLES=(
-# 		(ODINARY_USER,'Ordinary User'),
-# 		(MANAGER,'Manager'),
-# 		(ADMIN,'Admin'),
-# 	)
-# 	AUTH_STATUS = (
+class User(abstractUser):
+	USER_ROLES=(
+		(ODINARY_USER,'Ordinary User'),
+		(MANAGER,'Manager'),
+		(ADMIN,'Admin'),
+	)
+	AUTH_STATUS = (
 
-# 		(NEW,'New'),
-# 		(CODE_VERIFIED,'Code Verified'),
-# 		(DONE,'Done'),
-# 		(PHOTO_DONE,'Photo Done'),
+		(NEW,'New'),
+		(CODE_VERIFIED,'Code Verified'),
+		(DONE,'Done'),
+		(PHOTO_DONE,'Photo Done'),
 
-# 	)
-# 	AUTH_TYPE = (
-# 		(VIA_EMAIL,'Via Email'),
-# 		(VIA_PHONE,'Via Phone'),
-# 	)
-# 	user_role = models.CharField(max_length=20,choices=USER_ROLES,default=ODINARY_USER)
-# 	auth_status = models.CharField(max_length=20,choices=AUTH_STATUS,default=NEW)
-# 	auth_type = models.CharField(max_length=20,choices=AUTH_TYPE)
-# 	email = models.EmailField(unique=True,null=True,blank=True)
-# 	phone_number = models.CharField(max_length=15,null=True,blank=True,unique=True)
-# 	photo= models.ImageField(upload_to='user_photos/',null=True,blank=True,\
-# 						  validators=[FileExtensionValidator(allowed_extensions=['jpg','jpeg','png','.heic'])])	
-
+	)
+	AUTH_TYPE = (
+		(VIA_EMAIL,'Via Email'),
+		(VIA_PHONE,'Via Phone'),
+	)
+	user_role = models.CharField(max_length=20,choices=USER_ROLES,default=ODINARY_USER)
+	auth_status = models.CharField(max_length=20,choices=AUTH_STATUS,default=NEW)
+	auth_type = models.CharField(max_length=20,choices=AUTH_TYPE)
+	email = models.EmailField(unique=True,null=True,blank=True)
+	phone_number = models.CharField(max_length=15,null=True,blank=True,unique=True)
+	photo= models.ImageField(upload_to='user_photos/',null=True,blank=True,\
+						  validators=[FileExtensionValidator(allowed_extensions=['jpg','jpeg','png','.heic'])])	
+	def __str__(self):
+		return self.username
+	def verify_code(self,verify_type):
+		code = str(random.randint(1000, 9999))
+		CodeVerification.objects.create(
+			  user_id=self.id,
+			  verify_type=verify_type,
+			  code=code
+			)
+		return code
 	
+class CodeVerification(BaseModel):
+	VERIFY_TYPE = (
+		(VIA_EMAIL,'VIA_EMAIL'),
+		(VIA_PHONE,'VIA_PHONE'),
+	)
+	code = models.CharField(max_length=4)
+	verify_type = models.CharField(max_length=29,choices=VERIFY_TYPE)
+	user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='code_verifications')
+	expiration_time = models.DateTimeField(
+
+	)
+	confirmed = models.BooleanField(default=False)
+	def __str__(self):
+		return str(self.user.__str__()) 
+
+	def save (self, *args, **kwargs):
+		if self.verify_type == VIA_EMAIL:
+			self.expiration_time = datetime.now() + timedelta(minutes=EXPIRATION_EMAIL)
+		else:
+			self.expiration_time = datetime.now() + timedelta(minutes=EXPIRATION_PHONE)
+		super(CodeVerification, self).save(*args, **kwargs)			
