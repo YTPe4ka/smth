@@ -63,3 +63,41 @@ class EmailVerification(models.Model):
 	def is_expired(self):
 		return timezone.now() > self.expires_at
 
+
+
+
+
+# //////////////////////////////////////////////////////////////////////
+# from django.core.validators import FileExtensionValidator 
+# ODINARY_USER,MANAGER,ADMIN=('ordinary_user','manager','admin')
+# NEW,CODE_VERIFIED,DONE,PHOTO_DONE=('new','code_verified','done','photo_done')
+# VIA_EMAIL,VIA_PHONE=('via_email','via_phone')
+
+
+# class User(abstractUser):
+# 	USER_ROLES=(
+# 		(ODINARY_USER,'Ordinary User'),
+# 		(MANAGER,'Manager'),
+# 		(ADMIN,'Admin'),
+# 	)
+# 	AUTH_STATUS = (
+
+# 		(NEW,'New'),
+# 		(CODE_VERIFIED,'Code Verified'),
+# 		(DONE,'Done'),
+# 		(PHOTO_DONE,'Photo Done'),
+
+# 	)
+# 	AUTH_TYPE = (
+# 		(VIA_EMAIL,'Via Email'),
+# 		(VIA_PHONE,'Via Phone'),
+# 	)
+# 	user_role = models.CharField(max_length=20,choices=USER_ROLES,default=ODINARY_USER)
+# 	auth_status = models.CharField(max_length=20,choices=AUTH_STATUS,default=NEW)
+# 	auth_type = models.CharField(max_length=20,choices=AUTH_TYPE)
+# 	email = models.EmailField(unique=True,null=True,blank=True)
+# 	phone_number = models.CharField(max_length=15,null=True,blank=True,unique=True)
+# 	photo= models.ImageField(upload_to='user_photos/',null=True,blank=True,\
+# 						  validators=[FileExtensionValidator(allowed_extensions=['jpg','jpeg','png','.heic'])])	
+
+	
