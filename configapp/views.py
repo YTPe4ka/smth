@@ -31,6 +31,7 @@ def register_view(request):
 			send_mail(subject, message, from_email, recipient, fail_silently=True)
 
 			messages.success(request, 'Account created. Check your email for a verification code.')
+			print(f"Sent verification code {code} to {user.email}")
 			return redirect('configapp:verify', user_id=user.id)
 	else:
 		form = RegisterForm()
@@ -61,6 +62,37 @@ def verify_view(request, user_id):
 			return render(request, 'configapp/verify.html', {'user': user})
 
 	return render(request, 'configapp/verify.html', {'user': user})
+
+
+def resend_verification(request, user_id):
+	from django.contrib.auth import get_user_model
+	from django.shortcuts import get_object_or_404
+	from django.utils import timezone
+	from datetime import timedelta
+	import uuid
+
+	User = get_user_model()
+	user = get_object_or_404(User, pk=user_id)
+	last = EmailVerification.objects.filter(user=user, is_used=False).order_by('-created_at').first()
+	if last:
+		diff = timezone.now() - last.created_at
+		if diff < timedelta(minutes=5):
+			wait = 5 - int(diff.total_seconds() // 60)
+			messages.error(request, f'Please wait {wait} minute(s) before requesting a new code.')
+			return redirect('configapp:verify', user_id=user.id)
+
+	code = uuid.uuid4().hex[:6]
+	expires = timezone.now() + timedelta(days=1)
+	EmailVerification.objects.create(user=user, code=code, expires_at=expires)
+
+	subject = 'Email verification code'
+	message = f'Your verification code: {code}'
+	from_email = settings.DEFAULT_FROM_EMAIL
+	recipient = [user.email]
+	send_mail(subject, message, from_email, recipient, fail_silently=True)
+	print(f"Sent verification code {code} to {user.email}")
+	messages.success(request, 'New verification code sent to your email.')
+	return redirect('configapp:verify', user_id=user.id)
 
 
 def login_view(request):

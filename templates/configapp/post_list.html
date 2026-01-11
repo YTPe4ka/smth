@@ -1,7 +1,13 @@
 {% extends 'configapp/base.html' %}
 {% block content %}
+<style>
+  .post-card img {
+    width: 40%;
+    height: 400px;
+  }
+</style>
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h4">Posts</h1>
+  <h1 class="h4">Posts  </h1>
   {% if user.is_staff %}<a class="btn btn-sm btn-primary" href="{% url 'configapp:create_post' %}">Create post</a>{% endif %}
 </div>
 <div class="posts-list">

@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('register/', views.register_view, name='register'),
     path('verify/<int:user_id>/', views.verify_view, name='verify'),
+    path('verify/<int:user_id>/resend/', views.resend_verification, name='resend_verification'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 ]

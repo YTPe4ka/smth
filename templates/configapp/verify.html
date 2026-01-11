@@ -16,6 +16,12 @@
                         <button type="submit" class="btn btn-primary">Verify</button>
                     </div>
                 </form>
+                <form method="post" action="{% url 'configapp:resend_verification' user.id %}" class="mt-2">
+                    {% csrf_token %}
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-secondary">Resend code</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -1,5 +1,11 @@
 {% extends 'configapp/base.html' %}
 {% block content %}
+<style>
+  .card img {
+    width: 40%;
+    height: 400px;
+  }
+</style>
 <div class="card">
   {% if post.photo %}<img src="{{ post.photo.url }}" class="card-img-top" alt="{{ post.title }}">{% endif %}
   <div class="card-body">
