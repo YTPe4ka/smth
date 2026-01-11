@@ -1,0 +1,59 @@
+body {
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    background: #f5f7fb;
+    color: #222;
+    margin: 0;
+    padding: 0
+}
+
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 16px;
+    background: #fff;
+    border-radius: 8px
+}
+
+.site-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px
+}
+
+.site-nav .brand {
+    font-weight: 700;
+    color: #222;
+    text-decoration: none;
+    font-size: 20px
+}
+
+.site-nav .nav-links a {
+    margin-left: 8px
+}
+
+.messages {
+    margin: 8px 0
+}
+
+.post-card {
+    border: 1px solid #eef2f6
+}
+
+.post-card img {
+    max-height: 420px;
+    object-fit: cover;
+    border-bottom: 1px solid #eef2f6
+}
+
+.card-title a {
+    color: #111
+}
+
+.site-footer {
+    margin-top: 18px;
+    text-align: center;
+    color: #888;
+    font-size: 13px;
+    padding-top: 10px
+}

@@ -1,0 +1,28 @@
+{% extends 'configapp/base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-body py-4">
+                <h3 class="card-title mb-3 text-center">Welcome back</h3>
+                <p class="text-center text-muted mb-4">Sign in to continue</p>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Username or Email</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Password</label>
+                        {{ form.password }}
+                    </div>
+                    <div class="d-grid mb-2">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                    <div class="text-center"><a href="{% url 'configapp:register' %}">Create an account</a></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
